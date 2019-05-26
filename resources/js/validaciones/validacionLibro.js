@@ -50,22 +50,31 @@ function asociarEventos(){
         mostrarFormulario(idBook);
     });
 
-    $("#busqueda").keypress(function (event){
+    $("#searchInput").keypress(function (event){
+        event.preventDefault();
+        setTimeout(() => {
+            busquedaAjax();
+        }, 300);
+    });
+
+    $("#selectBusqueda").change(function (event){
         event.preventDefault();
         busquedaAjax();
-    })
+    });
+
+    $("#checkBox1").change(function(event){
+        event.preventDefault();
+        busquedaAjax();
+    });
+
+    $("#checkBox2").change(function(event){
+        event.preventDefault();
+        busquedaAjax();
+    });
+
 
 }
 
-
-function marcarInputCorrecto(input){
-    input.addClass("is-valid");
-
-}
-
-function marcarInputErroneo(input){
-    input.addClass("is-invalid");
-}
 
 function validacionTitulo(){
     $("#title").removeClass("is-valid is-invalid");
@@ -139,6 +148,7 @@ function validarCondiciones(){
     return correcto;
 }
 
+/** Validación completa del formulario */
 function validarFormulario(){
     $('#modalCarga').modal('show');
 
@@ -168,6 +178,7 @@ function validarFormulario(){
         
 }
 
+/** Editar un elemento de la lista por Axios */
 function editarFormulario(){
     let editForm = $("#formularioEditar").serialize();
     let idBook = $("#formularioEditar").attr("data-book");
@@ -184,7 +195,7 @@ function editarFormulario(){
         })
 
 }
-
+/** Eliminar un elemento de la lista por Axios */
 function borrarFormulario(){
     let idBook =  $("#confirmarEliminar").attr('data-elemento-borrar');
     $('#modalEliminar').modal('hide');
@@ -200,12 +211,13 @@ function borrarFormulario(){
         });
 }
 
+/** Mostrar */
 function mostrarFormulario(idBook){
 
-$('#modalCarga').modal("show");
+showModalCarga();
     axios.get(`/books/showAjax/${idBook}`)
         .then(function (response) {
-            $('#modalCarga').modal("hide");
+            hideModalCarga();
             $('#modalShow').modal('show');
             $('#info').html(response.data);
             
@@ -216,9 +228,11 @@ $('#modalCarga').modal("show");
         });
 }
 
+/**Búsqueda Ajax */
 function busquedaAjax(){
     let searchForm = $("#searchForm").serialize();
-    $('#busqueda').val();
+    spinnerShow();
+    $('#searchInput').val();
     axios.post('/books/searchAjax', searchForm)
         .then(function (response) {
             let divMostrarBusqueda = $("#mostrarBusqueda");
@@ -227,13 +241,36 @@ function busquedaAjax(){
             divMostrarBusqueda.html(response.data);
             console.log(response);
             spinnerShow();
-        }).catch(function (error) {
-            $('#modalError').modal('show');
+            })
+            .catch(function (error) {
+            showErrorModal();
             console.log(error);
-        }).then(function () {
+            })
+            .then(function () {
             spinnerHide()
         });
 }
+
+/**Paginar Ajax 
+
+function paginarAjax(){
+    let contadorMostrados = 10;
+
+    axios.get('/books/paginarAjax/'.concat(contadorMostrados))
+            .then(function (response) {
+                if(response.data === ""){
+                    alert("NO HAY MAS LIBROS");
+                }else{
+                    $("#mostrarBusqueda").append(response.data);
+                    contadorMostrados += 10;
+                }
+            }).catch(function () {
+                showErrorModal();
+            }).then(function(){
+                $("#spinner").hide();
+            });
+    }
+    */
 
 $(function (){
     
@@ -249,8 +286,42 @@ $(function (){
     });
 });
 
+/** MODALES */
+function showModalCarga(){
+    $('#modalCarga').modal('show');
+}
 
+function hideModalCarga(){
+    $('#modalCarga').modal('hide');
+}
 
+function showErrorModal(){
+    $('#modalError').modal('show');
+}
+
+function hideErrorModal(){
+    $('#modalError').modal('hide');
+}
+
+/** SPINNER */
+
+function spinnerHide(){
+    $("#spinner").hide();
+};
+
+function spinnerShow() {
+    $("#spinner").show();
+};
+
+/** INPUTS VALIDACIÓN */
+function marcarInputCorrecto(input){
+    input.addClass("is-valid");
+
+}
+
+function marcarInputErroneo(input){
+    input.addClass("is-invalid");
+}
 
 
 

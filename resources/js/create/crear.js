@@ -3,16 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
     formulario.addEventListener('submit', function (event) {
         event.preventDefault();
         crearLibroAjax();
-        despuesDeCrearAlerta();
     });
 
 
 });
-function crearLIbroAjax() {
+function crearLibroAjax() {
 
     let editForm = $("#formulario").serialize();
     if ($('#modal').modal('show'));
-    axios.post('/tanks/crearLibroAjax', editForm)
+    axios.post('/books/crearLibroAjax', editForm)
         .then(function (response) {
             console.log(response);
             $('#formulario').trigger("reset");
@@ -22,22 +21,4 @@ function crearLIbroAjax() {
             $('#modal').modal('hide');
         })
 
-}
-
-function despuesDeCrearAlerta() {
-
-    let editForm = $('#formulario').serialize();
-    axios.post('/tanks/crearLibroAjax', editForm)
-        .then(function (response) {
-            if ($('#alert').hasClass('hide')) {
-                $('#alert').removeClass('hide')
-                $('#alert').addClass('show');
-            };
-            $('#modalCrear').modal('show')
-            console.log(response);
-        }).catch(function (error) {
-            console.log(error);
-        }).then(function(){
-            $('#alert').modal('hide');
-        })
 }

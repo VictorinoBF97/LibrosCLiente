@@ -5,10 +5,6 @@
 @section('content')
 <h1>Book List</h1>
 
-    <div class="d-flex justify-content-center">
-        {{ $books->links() }}
-    </div>
-
     @if(session('message'))
     <div class="alert alert-primary" role="alert">
             {{ session('message') }}
@@ -18,39 +14,41 @@
     <div class="form-row">
     <form id="searchForm">
         <div class="form-group">
-            <label for="busqueda">Buscar por nombre</label>
-            <input id="busqueda" class="form-control" name="busqueda" type="text">
+            <label for="searchInput">Buscar por nombre</label>
+            <input id="searchInput" class="form-control" name="searchInput" type="text">
 
-            <label for="selectBusqueda">Filtro</label>
-            <select id="selectBusqueda" class="form-control" name="selectBusqueda">
-                <option value="#"></option>
-                <option value="Auhtor">Autor</option>
-                <option value="Publisher">Editorial</option>
+            <label for="searchType">Filtro</label>
+            <select id="searchType" class="form-control" name="searchType">
+                <option value="" selected>---Author---</option>
+                <option value="1">Gerard Villagómez</option>
+                <option value="2">Inés Abreu</option>
+                <option value="3">Berta Piña</option>
+                <option value="4">Andrea Tamayo</option>
+                <option value="5">Mateo Leal</option>
+                
             </select>
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkBox" id="checkBox1" value="option1">
-            <label class="form-check-label" for="checkBox1">Accion</label>
+            <input class="form-check-input" type="checkBox" id="searchCheck" value="1">
+            <label class="form-check-label" for="searchCheck">Filtro por título</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="checkBox2" value="option2">
-            <label class="form-check-label" for="checkBox2">Comedia</label>
-        </div> 
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="checkBox3" value="option3">
-            <label class="form-check-label" for="checkBox3">Drama</label> 
+            <input class="form-check-input" type="checkbox" id="searchCheck2" value="2">
+            <label class="form-check-label" for="searchCheck2">Filtro por descripción</label>
         </div> 
 
-        <button id="botonBuscar" class="btn btn-primary" type="submit">Buscando
+        <!--Botón del filtro de búsqueda-->
+        <button id="botonBusqueda" class="btn btn-primary" type="submit">Buscar
             <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         </button>
     </form>
 </div>
 
 <div id="mostrarBusqueda">
-
+  
 </div>
+
     
     @forelse($books as $book)
     <div id="libro{{ $book->id }}" class="book-card card mb-2">
@@ -78,10 +76,6 @@
     @empty
       <p>No hay libros</p>
     @endforelse
-
-    <div class="d-flex justify-content-center">
-        {{ $books->links() }}
-    </div>
         
     {{-- MODAL CONFIRMAR BORRAR --}}
     <div class="modal" data-accion="eliminar" id="modalEliminar" tabindex="-1" role="dialog">
@@ -124,8 +118,17 @@
   </div>
 </div>
 
+{{-- SPINNER --}}
+<div class="spinner-border" id="spinner" role="status">
+        <span class="sr-only">Loading...</span>
+</div>
+
+{{-- MODAL PAGINAR --}}
+
+
 
 @endsection
 @push('scripts')
     <script src="{{ mix('/js/validaciones/validacionLibro.js') }}" defer></script>
+    <script src="{{ mix('/js/paginate/paginate.js') }}" defer></script>
 @endpush

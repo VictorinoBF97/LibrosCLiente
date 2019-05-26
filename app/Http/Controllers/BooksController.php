@@ -246,10 +246,47 @@ class BooksController extends Controller
 
     public function buscarAjax(Request $request)
     {
-        sleep(3);
 
-        $books = request ('title');
 
-        return view ('public.books.partials.buscarAjaxIndex', ['books' => $boooks]);
+        $titulo = request("searchInput");
+        $seleccion = request("searchType");
+        $eleccion = request("searchCheck");
+        $eleccion2 = request("searchCheck2");
+
+        if($titulo !=""||$seleccion!=""||isset($eleccion)||isset($eleccion2)){
+
+            $books = Book::query();
+
+            if($titulo != ""){
+            $books = $books->where("title", "like", "%$titulo%");
+        }
+
+        if($seleccion != ""){
+            $books = $books->where('author_id',$seleccion);
+        }
+
+        if(isset($eleccion)){
+            $libros = $libros->orderBy('title', 'asc');
+        }
+        if(isset($eleccion2)){
+            $libros = $libros->orderBy('description', 'asc');
+        }
+
+        $librosPaginados = $libros->paginate(10);
+
+        } else {
+            $librosPaginados = $libros = Book::latest()->paginate(10);
+        }
+
+        return view ('public.books.partials.buscarAjaxIndex', ['books' => $libros->get()]);
+    }
+
+    public function paginarAjax($numElementos){
+        $books = Book::skip($numElementos)->take(10)->get();
+        $view = "";
+        if(count($books)>0){
+            $view =  view('public.books.partials.partialPaginate')->withBooks($books);
+        }    
+        return $view;
     }
 }

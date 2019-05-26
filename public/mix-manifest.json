@@ -1,5 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/js/paginate/paginate.js": "/js/paginate/paginate.js",
     "/js/validaciones/validacionLibro.js": "/js/validaciones/validacionLibro.js"
 }

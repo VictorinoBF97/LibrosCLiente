@@ -134,14 +134,24 @@ function asociarEventos() {
     var idBook = $(event.target).attr('data-book');
     mostrarFormulario(idBook);
   });
-}
-
-function marcarInputCorrecto(input) {
-  input.addClass("is-valid");
-}
-
-function marcarInputErroneo(input) {
-  input.addClass("is-invalid");
+  $("#searchInput").keypress(function (event) {
+    event.preventDefault();
+    setTimeout(function () {
+      busquedaAjax();
+    }, 300);
+  });
+  $("#selectBusqueda").change(function (event) {
+    event.preventDefault();
+    busquedaAjax();
+  });
+  $("#checkBox1").change(function (event) {
+    event.preventDefault();
+    busquedaAjax();
+  });
+  $("#checkBox2").change(function (event) {
+    event.preventDefault();
+    busquedaAjax();
+  });
 }
 
 function validacionTitulo() {
@@ -215,6 +225,8 @@ function validarCondiciones() {
 
   return correcto;
 }
+/** Validación completa del formulario */
+
 
 function validarFormulario() {
   $('#modalCarga').modal('show');
@@ -239,6 +251,8 @@ function validarFormulario() {
     $('#modal').modal('show');
   }
 }
+/** Editar un elemento de la lista por Axios */
+
 
 function editarFormulario() {
   var editForm = $("#formularioEditar").serialize();
@@ -253,6 +267,8 @@ function editarFormulario() {
     $('#modalCarga').modal('hide');
   });
 }
+/** Eliminar un elemento de la lista por Axios */
+
 
 function borrarFormulario() {
   var idBook = $("#confirmarEliminar").attr('data-elemento-borrar');
@@ -267,11 +283,13 @@ function borrarFormulario() {
     $('#modalCarga').modal("hide");
   });
 }
+/** Mostrar */
+
 
 function mostrarFormulario(idBook) {
-  $('#modalCarga').modal("show");
+  showModalCarga();
   axios.get("/books/showAjax/".concat(idBook)).then(function (response) {
-    $('#modalCarga').modal("hide");
+    hideModalCarga();
     $('#modalShow').modal('show');
     $('#info').html(response.data);
   }).catch(function () {
@@ -280,6 +298,47 @@ function mostrarFormulario(idBook) {
     $('#modalCarga').modal("hide");
   });
 }
+/**Búsqueda Ajax */
+
+
+function busquedaAjax() {
+  var searchForm = $("#searchForm").serialize();
+  spinnerShow();
+  $('#searchInput').val();
+  axios.post('/books/searchAjax', searchForm).then(function (response) {
+    var divMostrarBusqueda = $("#mostrarBusqueda");
+    divMostrarBusqueda.empty();
+    divMostrarBusqueda.html(response.data);
+    console.log(response);
+    spinnerShow();
+  }).catch(function (error) {
+    showErrorModal();
+    console.log(error);
+  }).then(function () {
+    spinnerHide();
+  });
+}
+/**Paginar Ajax 
+
+function paginarAjax(){
+    let contadorMostrados = 10;
+
+    axios.get('/books/paginarAjax/'.concat(contadorMostrados))
+            .then(function (response) {
+                if(response.data === ""){
+                    alert("NO HAY MAS LIBROS");
+                }else{
+                    $("#mostrarBusqueda").append(response.data);
+                    contadorMostrados += 10;
+                }
+            }).catch(function () {
+                showErrorModal();
+            }).then(function(){
+                $("#spinner").hide();
+            });
+    }
+    */
+
 
 $(function () {
   $('#myTabPill a').on('show.bs.tab', function (e) {
@@ -291,9 +350,46 @@ $(function () {
     });
   });
 });
-$(function () {
-  $('#myList a:last-child').tab('show');
-});
+/** MODALES */
+
+function showModalCarga() {
+  $('#modalCarga').modal('show');
+}
+
+function hideModalCarga() {
+  $('#modalCarga').modal('hide');
+}
+
+function showErrorModal() {
+  $('#modalError').modal('show');
+}
+
+function hideErrorModal() {
+  $('#modalError').modal('hide');
+}
+/** SPINNER */
+
+
+function spinnerHide() {
+  $("#spinner").hide();
+}
+
+;
+
+function spinnerShow() {
+  $("#spinner").show();
+}
+
+;
+/** INPUTS VALIDACIÓN */
+
+function marcarInputCorrecto(input) {
+  input.addClass("is-valid");
+}
+
+function marcarInputErroneo(input) {
+  input.addClass("is-invalid");
+}
 
 /***/ }),
 

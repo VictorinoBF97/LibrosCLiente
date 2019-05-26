@@ -23,3 +23,4 @@ Route::put('/books/editAjax/{id}','BooksController@editarLibroAjax');
 Route::delete('/books/deleteAjax/{id}','BooksController@eliminarLibroAjax');
 Route::get('/books/showAjax/{id}','BooksController@mostrarLibroAjax');
 Route::post('/books/searchAjax', 'BooksController@buscarAjax');
+Route::get('/books/paginateAjax/obtenerAjax/{numElementos}', 'BooksController@paginarAjax');

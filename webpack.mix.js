@@ -13,4 +13,5 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css')
-   .js('resources/js/validaciones/validacionLibro.js', 'public/js/validaciones/');
+   .js('resources/js/validaciones/validacionLibro.js', 'public/js/validaciones/')
+   .js('resources/js/paginate/paginate.js', 'public/js/paginate/');
